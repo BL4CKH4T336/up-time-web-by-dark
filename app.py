@@ -1,5 +1,4 @@
 # app.py
-import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -102,10 +101,6 @@ def schedule_monitor(monitor):
         id=f'monitor_{monitor.id}'
     )
 
-@app.route('/test')
-def test():
-    return render_template('base.html')
-
 # Routes
 @app.route('/')
 def home():
@@ -155,7 +150,7 @@ def register():
             db.session.commit()
             flash('Registration successful. Please login.')
             return redirect(url_for('login'))
-    return render_template('register.html')
+    return render_template('register.html'))
 
 @app.route('/logout')
 def logout():
@@ -190,7 +185,7 @@ def add_monitor():
         flash('Monitor added successfully')
         return redirect(url_for('home'))
     
-    return render_template('add_monitor.html')
+    return render_template('add_monitor.html'))
 
 @app.route('/monitor/<int:id>')
 def view_monitor(id):
@@ -237,13 +232,4 @@ def delete_monitor(id):
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
-    # Create database and tables if they don't exist
-    with app.app_context():
-        db.create_all()
-    
-    # Ensure the templates folder exists
-    if not os.path.exists('templates'):
-        os.makedirs('templates')
-        print("Created templates directory")
-    
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    app.run(host="0.0.0.0" , port = 5000 , debug=True)
