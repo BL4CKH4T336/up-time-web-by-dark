@@ -150,7 +150,7 @@ def register():
             db.session.commit()
             flash('Registration successful. Please login.')
             return redirect(url_for('login'))
-    return render_template('register.html'))
+    return render_template('register.html')
 
 @app.route('/logout')
 def logout():
@@ -185,7 +185,7 @@ def add_monitor():
         flash('Monitor added successfully')
         return redirect(url_for('home'))
     
-    return render_template('add_monitor.html'))
+    return render_template('add_monitor.html')
 
 @app.route('/monitor/<int:id>')
 def view_monitor(id):
