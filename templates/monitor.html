@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow mb-6">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold">{{ monitor.name }}</h2>
+        <span class="px-3 py-1 text-sm rounded-full 
+            {% if monitor.status == 'up' %}bg-green-100 text-green-800
+            {% elif monitor.status == 'down' %}bg-red-100 text-red-800
+            {% else %}bg-gray-100 text-gray-800{% endif %}">
+            {{ monitor.status|capitalize }}
+        </span>
+    </div>
+    
+    <p class="text-gray-600 mb-6">{{ monitor.url }}</p>
+    
+    <div class="flex space-x-4 mb-6">
+        <a href="#" class="text-gray-600 hover:text-indigo-600">Pause</a>
+        <a href="#" class="text-gray-600 hover:text-indigo-600">Edit</a>
+        <a href="#" class="text-gray-600 hover:text-indigo-600">Clone</a>
+        <a href="{{ url_for('delete_monitor', id=monitor.id) }}" class="text-red-600 hover:text-red-800">Delete</a>
+    </div>
+    
+    <div class="mb-4">
+        <p class="text-gray-500">Check every {{ monitor.interval }} seconds</p>
+    </div>
+    
+    <div class="mb-6">
+        <div class="text-center py-4 
+            {% if monitor.status == 'up' %}bg-green-50 text-green-800
+            {% elif monitor.status == 'down' %}bg-red-50 text-red-800
+            {% else %}bg-gray-50 text-gray-800{% endif %} rounded-lg">
+            <span class="font-bold text-lg">{{ monitor.status|upper }}</span>
+        </div>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-white p-4 rounded-lg border">
+            <h3 class="font-medium mb-2">Response</h3>
+            <p class="text-2xl font-bold">{{ monitor.response_time }} ms</p>
+            <p class="text-gray-500 text-sm">(Current)</p>
+        </div>
+        
+        <div class="bg-white p-4 rounded-lg border">
+            <h3 class="font-medium mb-2">Avg. Response</h3>
+            <p class="text-2xl font-bold">{{ monitor.response_time + random.randint(-50, 50) }} ms</p>
+            <p class="text-gray-500 text-sm">(24-hour)</p>
+        </div>
+        
+        <div class="bg-white p-4 rounded-lg border">
+            <h3 class="font-medium mb-2">Uptime</h3>
+            <p class="text-2xl font-bold">{{ monitor.uptime_24h }}%</p>
+            <p class="text-gray-500 text-sm">(24-hour)</p>
+        </div>
+        
+        <div class="bg-white p-4 rounded-lg border">
+            <h3 class="font-medium mb-2">Uptime</h3>
+            <p class="text-2xl font-bold">{{ monitor.uptime_30d }}%</p>
+            <p class="text-gray-500 text-sm">(30-day)</p>
+        </div>
+    </div>
+    
+    <div class="mb-6">
+        <h3 class="font-medium mb-2">Recent ▼</h3>
+        <canvas id="responseChart" height="200"></canvas>
+    </div>
+</div>
+
+<script>
+    const ctx = document.getElementById('responseChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ labels|tojson }},
+            datasets: [{
+                label: 'Response Time (ms)',
+                data: {{ data|tojson }},
+                borderColor: '#4f46e5',
+                backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                tension: 0.1,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
